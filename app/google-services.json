@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "475602379760",
+    "firebase_url": "https://swivel-test.firebaseio.com",
+    "project_id": "swivel-test",
+    "storage_bucket": "swivel-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:475602379760:android:5378f9eb90b3e990137335",
+        "android_client_info": {
+          "package_name": "com.example.swiveltest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "475602379760-cgc0r42716liaojbaggcdmc6k00da5ri.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.swiveltest",
+            "certificate_hash": "533f79cbb1a639a2a0bb640b826d05c9bba9fdc7"
+          }
+        },
+        {
+          "client_id": "475602379760-odim6arvm38c8c9j26plagpu6u32gala.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDw2X6JJ9DbE89NxtrP6Mss6zTPUUlLtYw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "475602379760-odim6arvm38c8c9j26plagpu6u32gala.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
