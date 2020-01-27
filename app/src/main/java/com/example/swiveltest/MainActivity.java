@@ -3,75 +3,117 @@ package com.example.swiveltest;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.swiveltest.CardModel.CardModel;
+import com.example.swiveltest.DTO.MovieDTO;
+import com.example.swiveltest.Utils.ServerUtils;
 
+import android.util.Log;
 import android.view.View;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.OkHttpClient;
+import com.google.gson.Gson;
+import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
-
-import androidx.drawerlayout.widget.DrawerLayout;
+import com.squareup.okhttp.Response;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.view.Menu;
+import android.widget.Toast;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-
     private AppBarConfiguration mAppBarConfiguration;
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapter;
+    private List<MovieDTO> movieList = new ArrayList<>();
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toast.makeText(MainActivity.this, "Loading Please Wait", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "Pull Down to Refresh", Toast.LENGTH_SHORT).show();
+        recyclerView = findViewById(R.id.movieRecyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        loadMovies();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        swipeRefreshLayout = findViewById(R.id.swipeRefresh);
 
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,
-                R.id.nav_tools, R.id.nav_share, R.id.nav_send)
-                .setDrawerLayout(drawer)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadMovies();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    private void loadMovies() {
+        for (int i = 0; i <= 20; i++) {
+            Random r = new Random();
+            int imdb = r.nextInt(99 - 10) + 11;
+            String url = "http://www.omdbapi.com/?apikey=fc63eef5&i=tt00057" + imdb;
+            Callback callback = new Callback() {
+                @Override
+                public void onFailure(Request request, IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        try {
+                            final String myResponse = response.body().string();
+                            Gson gson = new Gson();
+                            MovieDTO movieDTO = gson.fromJson(myResponse, MovieDTO.class);
+                            movieList.add(movieDTO);
+                            adapter = new Adapter(getApplicationContext(), getModeledData(movieList));
+                            recyclerView.setAdapter(adapter);
+                        } catch (Exception e) {
+                            Log.e("", "" + e);
+
+                        }
+                    }
+                }
+            };
+
+            new ServerUtils(url, callback);
+        }
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
-    }
-
-    public void logout(View view){
+    public void logout(View view) {
         FirebaseAuth.getInstance().signOut();
-        startActivity(new Intent(getApplicationContext(),Login.class));
+        startActivity(new Intent(getApplicationContext(), Login.class));
         finish();
     }
-    OkHttpClient client = new OkHttpClient();
 
-    Request request = new Request.Builder()
-            .url("https://www.vogella.com/index.html")
-            .build();
-
+    private List<CardModel> getModeledData(List<MovieDTO> movieList) {
+        List<CardModel> cardModels = new ArrayList<>();
+        for (int i = 0; i < movieList.size(); i++) {
+            MovieDTO movieDTO = movieList.get(i);
+            CardModel cardModel = new CardModel();
+            cardModel.setTitle(movieDTO.getTitle());
+            cardModel.setGenre(movieDTO.getGenre());
+            cardModel.setYear(movieDTO.getYear());
+            cardModel.setRating(movieDTO.getImdbRating());
+            cardModel.setImageUrl(movieDTO.getPoster());
+            cardModels.add(cardModel);
+        }
+        return cardModels;
+    }
 }

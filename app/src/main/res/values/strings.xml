@@ -31,4 +31,5 @@
     <string name="Already_Have_an_account">Already Have an Account? Login</string>
     <string name="logout">Log out</string>
     <string name="newRegister">Do not have an account?</string>
+    <string name="name">Theatre</string>
 </resources>

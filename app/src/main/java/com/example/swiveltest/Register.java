@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -19,11 +20,11 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class Register extends AppCompatActivity {
 
-    EditText nName,nEmail,nPassword;
+    EditText nName, nEmail, nPassword;
     Button registerBtn;
     TextView login;
     FirebaseAuth firebaseAuth;
-
+    SpinKitView spinKitView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,18 +36,19 @@ public class Register extends AppCompatActivity {
         nPassword = findViewById(R.id.regPassword);
         registerBtn = findViewById(R.id.registerBtn);
         login = findViewById(R.id.login);
+        spinKitView = findViewById(R.id.spin_kit);
 
         firebaseAuth = firebaseAuth.getInstance();
 
-        if(firebaseAuth.getCurrentUser() != null){
-            startActivity(new Intent(getApplicationContext(),Login.class));
+        if (firebaseAuth.getCurrentUser() != null) {
+            startActivity(new Intent(getApplicationContext(), Login.class));
             finish();
         }
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),Login.class));
+                startActivity(new Intent(getApplicationContext(), Login.class));
             }
         });
 
@@ -56,28 +58,28 @@ public class Register extends AppCompatActivity {
                 String email = nEmail.getText().toString().trim();
                 String password = nPassword.getText().toString().trim();
 
-                if(TextUtils.isEmpty(email)){
+                if (TextUtils.isEmpty(email)) {
                     nEmail.setError("Please fill Email");
                     return;
                 }
-                if(TextUtils.isEmpty(password)){
+                if (TextUtils.isEmpty(password)) {
                     nPassword.setError("Please fill the password");
                     return;
                 }
-                if(password.length()<5){
+                if (password.length() < 5) {
                     nPassword.setError("password must greater than 5");
                     return;
                 }
-
-                firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                spinKitView.setVisibility(View.VISIBLE);
+                firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            Toast.makeText(Register.this,"Registration Sucsessfull",Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(),Login.class));
-                        }
-                        else{
-                            Toast.makeText(Register.this,"Error",Toast.LENGTH_SHORT).show();
+                        if (task.isSuccessful()) {
+                            Toast.makeText(Register.this, "Registration Sucsessfull", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getApplicationContext(), Login.class));
+                        } else {
+                            Toast.makeText(Register.this, "Error", Toast.LENGTH_SHORT).show();
+                            spinKitView.setVisibility(View.INVISIBLE);
                         }
                     }
                 });

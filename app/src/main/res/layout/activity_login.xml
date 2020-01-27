@@ -14,7 +14,8 @@
         android:layout_marginBottom="440dp"
         android:ems="10"
         android:inputType="textEmailAddress"
-        android:text="@string/email"
+        android:hint="@string/email"
+        android:textColorHint="#eafaf1"
         android:textColor="#eafaf1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,8 +30,9 @@
         android:layout_height="47dp"
         android:ems="10"
         android:inputType="textPassword"
-        android:text="@string/password"
+        android:hint="@string/password"
         android:textColor="#eafaf1"
+        android:textColorHint="#eafaf1"
         app:layout_constraintBottom_toTopOf="@+id/loginBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,5 +75,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/spin_kit"
+        style="@style/SpinKitView.Large.DoubleBounce"
+        android:layout_width="48dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        app:SpinKit_Color="#eafaf1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newRegister" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,16 +12,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class Login extends AppCompatActivity {
-    EditText lEmail,lPassword;
+    EditText lEmail, lPassword;
     Button loginBtn;
     FirebaseAuth firebaseAuth;
     TextView register;
+    SpinKitView spinKitView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +35,11 @@ public class Login extends AppCompatActivity {
         loginBtn = findViewById(R.id.loginBtn);
         register = findViewById(R.id.newRegister);
         firebaseAuth = FirebaseAuth.getInstance();
-
+        spinKitView = findViewById(R.id.spin_kit);
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),Register.class));
+                startActivity(new Intent(getApplicationContext(), Register.class));
             }
         });
 
@@ -48,27 +50,28 @@ public class Login extends AppCompatActivity {
                 String email = lEmail.getText().toString().trim();
                 String password = lPassword.getText().toString().trim();
 
-                if(TextUtils.isEmpty(email)){
+                if (TextUtils.isEmpty(email)) {
                     lEmail.setError("Please fill Email");
                     return;
                 }
-                if(TextUtils.isEmpty(password)){
+                if (TextUtils.isEmpty(password)) {
                     lPassword.setError("Please fill the password");
                     return;
                 }
-                if(password.length()<5){
+                if (password.length() < 5) {
                     lPassword.setError("password must greater than 5");
                     return;
                 }
-                firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                spinKitView.setVisibility(View.VISIBLE);
+                firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            Toast.makeText(Login.this,"Login Sucsessfull",Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                        }
-                        else {
-                            Toast.makeText(Login.this,"Error Login",Toast.LENGTH_SHORT).show();
+                        if (task.isSuccessful()) {
+                            Toast.makeText(Login.this, "Login Sucsessfull", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        } else {
+                            Toast.makeText(Login.this, "Error Login", Toast.LENGTH_SHORT).show();
+                            spinKitView.setVisibility(View.INVISIBLE);
                         }
                     }
                 });
